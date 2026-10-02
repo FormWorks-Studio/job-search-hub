@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Job Search Hub</title>
+<meta name="description" content="One place for Mike Kwilos's job search: mass timber careers, creative fabrication careers and a location-based job search, plus every role posted in the last 30 days.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --ground: #FBFAF7;
+    --surface: #FFFFFF;
+    --row-alt: #F7F5F0;
+    --ink: #141210;
+    --ink-soft: #5C554D;
+    --ink-faint: #9A928A;
+    --line: #ECE8E1;
+    --line-strong: #D9D3C9;
+    --accent: #B4441C;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #F8E9E1;
+    --black: #141210;
+    --black-soft: #E9E7E4;
+    --shadow: rgba(20, 18, 16, 0.05);
+  }
+  * { box-sizing: border-box; }
+  html { background: var(--ground); }
+  body {
+    margin: 0; background: var(--ground); color: var(--ink);
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    font-size: 14.5px; line-height: 1.55; -webkit-font-smoothing: antialiased;
+  }
+  h1, h2 { font-weight: 300; margin: 0; letter-spacing: -0.025em; text-wrap: balance; }
+  p { margin: 0; }
+  a { color: inherit; }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .mono { font-family: 'IBM Plex Mono', Consolas, monospace; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+  header.hero { border-top: 4px solid var(--black); border-bottom: 1px solid var(--line); padding: 64px 0 40px; }
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); display: flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ""; width: 10px; height: 10px; background: var(--accent); display: inline-block; }
+  header.hero h1 { font-size: clamp(32px, 4.6vw, 52px); line-height: 1.04; margin-top: 18px; max-width: 18ch; }
+  header.hero p.lede { margin-top: 18px; max-width: 64ch; font-size: 15.5px; color: var(--ink-soft); }
+
+  .label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); }
+  section { padding: 44px 0 8px; }
+  section h2 { font-size: 26px; margin-top: 8px; }
+  section .sub { margin-top: 6px; color: var(--ink-soft); max-width: 70ch; }
+
+  /* Career page cards */
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+  .card {
+    display: flex; flex-direction: column; gap: 12px; text-decoration: none;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 22px 22px 20px;
+    box-shadow: 0 1px 3px var(--shadow); transition: border-color 0.15s, transform 0.15s;
+  }
+  .card:hover { border-color: var(--ink); transform: translateY(-2px); }
+  .card h3 { margin: 0; font-size: 19px; font-weight: 500; letter-spacing: -0.01em; }
+  .card p { color: var(--ink-soft); font-size: 13.5px; }
+  .card .stats { display: flex; gap: 20px; margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line); }
+  .card .stats b { display: block; font-weight: 200; font-size: 26px; letter-spacing: -0.03em; line-height: 1.1; }
+  .card .stats b.rust { color: var(--accent); }
+  .card .go { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink); }
+  .card:hover .go { color: var(--accent); }
+
+  /* Recent postings */
+  .recent-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; }
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chip {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.03em; padding: 7px 13px; border-radius: 999px;
+    border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-soft); cursor: pointer; white-space: nowrap;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .chip:hover { border-color: var(--ink); color: var(--ink); }
+  .chip.active { background: var(--black); color: var(--accent-ink); border-color: var(--black); }
+  .list { margin-top: 18px; background: var(--surface); border: 1px solid var(--line); border-radius: 4px; box-shadow: 0 1px 3px var(--shadow); }
+  .item { display: grid; grid-template-columns: 96px 1fr auto; gap: 18px; align-items: start; padding: 15px 18px; border-bottom: 1px solid var(--line); text-decoration: none; transition: background 0.12s; }
+  .item:last-child { border-bottom: none; }
+  .item:hover { background: var(--accent-soft); }
+  .item .date { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft); padding-top: 2px; white-space: nowrap; }
+  .item .date.fresh { color: var(--accent); font-weight: 500; }
+  .item .title { font-weight: 600; font-size: 14px; }
+  .item .meta { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+  .item .badges { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; padding-top: 1px; }
+  .badge { font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; padding: 2px 7px; border-radius: 2px; white-space: nowrap; background: var(--black-soft); color: var(--ink-soft); }
+  .badge.remote { background: var(--accent); color: var(--accent-ink); }
+  .badge.flex { background: var(--black); color: var(--accent-ink); }
+  .empty { padding: 36px 18px; text-align: center; color: var(--ink-faint); }
+
+  footer { border-top: 1px solid var(--line); margin-top: 48px; padding: 26px 0 48px; color: var(--ink-faint); font-size: 12.5px; }
+  footer p + p { margin-top: 6px; }
+  footer a { color: var(--ink-soft); }
+
+  @media (max-width: 860px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    header.hero { padding: 44px 0 30px; }
+    .item { grid-template-columns: 1fr; gap: 6px; }
+    .item .badges { justify-content: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Job Search Hub</p>
+    <h1>Mass timber, creative fabrication and where to live.</h1>
+    <p class="lede">The three job-search pages in one place, plus every role posted in the last 30 days across them. Counts and recent postings load straight from each careers page, so this page stays current when they're updated.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section>
+    <p class="label">Career pages</p>
+    <div class="cards">
+      <a class="card" href="https://formworks-studio.github.io/mass-timber-careers/">
+        <h3>Mass Timber Careers</h3>
+        <p>Manufacturers, engineers, builders and architects in mass timber, checked for VDC, BIM, detailing, design and coordination roles.</p>
+        <div class="stats">
+          <div><b id="mt-companies">–</b><span class="label">Companies</span></div>
+          <div><b id="mt-postings">–</b><span class="label">Postings</span></div>
+          <div><b class="rust" id="mt-remote">–</b><span class="label">Remote</span></div>
+        </div>
+        <span class="go">Open ↗</span>
+      </a>
+      <a class="card" href="https://formworks-studio.github.io/creative-fabrication-careers/">
+        <h3>Creative Fabrication Careers</h3>
+        <p>Studios like The Factory NYC plus millwork, signage, Rhino/Grasshopper, CNC and 3D printing, with remote shop-drawing roles first.</p>
+        <div class="stats">
+          <div><b id="cf-companies">–</b><span class="label">Companies</span></div>
+          <div><b id="cf-postings">–</b><span class="label">Postings</span></div>
+          <div><b class="rust" id="cf-remote">–</b><span class="label">Remote</span></div>
+        </div>
+        <span class="go">Open ↗</span>
+      </a>
+      <a class="card" href="https://formworks-studio.github.io/location-based-job-search/">
+        <h3>Location-Based Job Search</h3>
+        <p>Northeast cities and towns compared on architect pay, cost of living and sustainable, historic, commercial and design-build firms, from Brooklyn to the Hudson Valley.</p>
+        <div class="stats">
+          <div><b>Map</b><span class="label">+ city list</span></div>
+        </div>
+        <span class="go">Open ↗</span>
+      </a>
+    </div>
+  </section>
+
+  <section>
+    <div class="recent-head">
+      <div>
+        <p class="label">Posted in the last 30 days</p>
+        <h2 id="recent-count">Recent postings</h2>
+        <p class="sub">Newest first. Only roles with a known posting date are shown; dates in rust are from the last 14 days.</p>
+      </div>
+      <div class="filters" id="filters">
+        <button class="chip active" data-f="all">All</button>
+        <button class="chip" data-f="remote">Remote</button>
+        <button class="chip" data-f="flex">Part-time + freelance</button>
+        <button class="chip" data-f="mt">Mass timber</button>
+        <button class="chip" data-f="cf">Creative fab</button>
+      </div>
+    </div>
+    <div class="list" id="recent-list"><p class="empty">Loading…</p></div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Postings come from the two careers pages above, each a snapshot from research, not a live feed. Always confirm on the employer's own page before applying.</p>
+    <p>Portfolio: <a href="https://formworks-studio.github.io/MikeKwilos_SelectedWorks_2011-2026/">Selected Works</a></p>
+  </div>
+</footer>
+
+<!-- Both careers pages are on the same GitHub Pages site, so their data files
+     load directly. Locally, the sibling folders resolve the same way. -->
+<script src="../mass-timber-careers/data.js"></script>
+<script src="../creative-fabrication-careers/data.js"></script>
+<script>
+(function () {
+  const SOURCES = [
+    { key: 'mt', name: 'Mass timber', url: 'https://formworks-studio.github.io/mass-timber-careers/', companies: window.__MASS_TIMBER_COMPANIES__ || [] },
+    { key: 'cf', name: 'Creative fab', url: 'https://formworks-studio.github.io/creative-fabrication-careers/', companies: window.__CREATIVE_FAB_COMPANIES__ || [] },
+  ];
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const fmtDate = d => `${MONTHS[+d.slice(5, 7) - 1]} ${+d.slice(8, 10)}, ${d.slice(0, 4)}`;
+  const ageDays = d => (Date.now() - Date.parse(d)) / 864e5;
+  const isRemote = p => p.remote === true || /\bremote\b/i.test(p.title + ' ' + (p.summary || ''));
+  const isFlex = p => p.flex === true || /project-based|freelance|hybrid|contract|part-time|temporary|on-call/i.test(p.title + ' ' + (p.summary || ''));
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // Card stats.
+  SOURCES.forEach(s => {
+    const ps = s.companies.flatMap(c => c.postings || []);
+    document.getElementById(s.key + '-companies').textContent = s.companies.length || '–';
+    document.getElementById(s.key + '-postings').textContent = ps.length || '–';
+    document.getElementById(s.key + '-remote').textContent = s.companies.length ? ps.filter(isRemote).length : '–';
+  });
+
+  // Postings from the last 30 days, newest first.
+  const recent = SOURCES.flatMap(s => s.companies.flatMap(c => (c.postings || [])
+    .filter(p => p.posted && ageDays(p.posted) <= 30)
+    .map(p => ({ ...p, company: c.name, hq: c.hq, source: s }))))
+    .sort((a, b) => b.posted.localeCompare(a.posted) || a.title.localeCompare(b.title));
+
+  const list = document.getElementById('recent-list');
+  const countEl = document.getElementById('recent-count');
+  let filter = 'all';
+
+  function render() {
+    const rows = recent.filter(p =>
+      filter === 'all' ||
+      (filter === 'remote' && isRemote(p)) ||
+      (filter === 'flex' && isFlex(p)) ||
+      p.source.key === filter);
+    countEl.textContent = `${rows.length} recent posting${rows.length === 1 ? '' : 's'}`;
+    if (!SOURCES.some(s => s.companies.length)) {
+      list.innerHTML = '<p class="empty">The careers data didn\'t load. Open the career pages above instead.</p>';
+      return;
+    }
+    list.innerHTML = rows.length ? rows.map(p => `
+      <a class="item" href="${esc(p.url || p.source.url)}" target="_blank" rel="noopener">
+        <span class="date${ageDays(p.posted) <= 14 ? ' fresh' : ''}">${fmtDate(p.posted)}</span>
+        <span>
+          <span class="title">${esc(p.title)}</span>
+          <span class="meta" style="display:block">${esc(p.company)}${p.hq ? ' · ' + esc(p.hq) : ''}</span>
+        </span>
+        <span class="badges">
+          ${isRemote(p) ? '<span class="badge remote">Remote</span>' : ''}
+          ${isFlex(p) ? '<span class="badge flex">Flexible</span>' : ''}
+          <span class="badge">${esc(p.source.name)}</span>
+        </span>
+      </a>`).join('') : '<p class="empty">Nothing posted in the last 30 days matches this filter.</p>';
+  }
+
+  document.querySelectorAll('#filters .chip').forEach(btn => btn.addEventListener('click', () => {
+    filter = btn.dataset.f;
+    document.querySelectorAll('#filters .chip').forEach(b => b.classList.toggle('active', b === btn));
+    render();
+  }));
+  render();
+})();
+</script>
+</body>
+</html>
